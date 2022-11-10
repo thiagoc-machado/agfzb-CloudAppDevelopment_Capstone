@@ -14,15 +14,46 @@
 </head>
 
     <body>
-    <!-- Remove this line the first time you edit this file -->
-     This is the index page of your Django app!
+        {% comment %} This is the index page of your Django app! {% endcomment %}
      <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <div class="navbar-header">
-                  <a class="navbar-brand" href="#">Online Course</a>
+                <a class="navbar-brand" >Best Cars</a>
             </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                {% if user.is_authenticated %}
+                        <a class="btn btn-link" href="{% url 'djangoapp:about' %}">About</a>
+                        <a class="btn btn-link" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+
+                        <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                        <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+                        {% comment %} <a class="btn btn-link" >Logout</a> {% endcomment %}
+                {% else %}
+                        <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
+                        {% comment %} <form class="form-inline" method="post"> {% endcomment %}
+                            {% csrf_token %}
+                            <div class="input-group">
+
+                                <a class="btn btn-link" href="{% url 'djangoapp:about' %}">About</a>
+                                <a class="btn btn-link" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+
+                                <input type="text" class="form-control" placeholder="Username" name="username" >
+                                <input type="password" class="form-control" placeholder="Password" name="psw" >
+                                <button class="btn btn-primary" type="submit">Login</button>
+                                <a class="btn btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+                                {% comment %} <a class="btn btn-link" >Sign Up</a> {% endcomment %}
+                            </div>
+                        </form>
+                {% endif %}
+
+                </li>
+            </ul>
+
         </div>
-    </nav>
+    </nav>    
+    
 
     <!--Add a dealer table here -->
 
