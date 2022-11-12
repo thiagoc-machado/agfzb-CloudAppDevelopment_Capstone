@@ -12,51 +12,73 @@
     <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 
 </head>
-
+{% if message %}
+    <script>
+        alert('{{ message }}');
+    </script>
+{%endif%}
     <body>
-        {% comment %} This is the index page of your Django app! {% endcomment %}
-     <nav class="navbar navbar-light bg-light">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" >Best Cars</a>
-            </div>
-
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                {% if user.is_authenticated %}
-                        <a class="btn btn-link" href="{% url 'djangoapp:about' %}">About</a>
-                        <a class="btn btn-link" href="{% url 'djangoapp:contact' %}">Contact Us</a>
-
-                        <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-                        <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
-                        {% comment %} <a class="btn btn-link" >Logout</a> {% endcomment %}
-                {% else %}
-                        <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
-                        {% comment %} <form class="form-inline" method="post"> {% endcomment %}
-                            {% csrf_token %}
-                            <div class="input-group">
-
-                                <a class="btn btn-link" href="{% url 'djangoapp:about' %}">About</a>
-                                <a class="btn btn-link" href="{% url 'djangoapp:contact' %}">Contact Us</a>
-
-                                <input type="text" class="form-control" placeholder="Username" name="username" >
-                                <input type="password" class="form-control" placeholder="Password" name="psw" >
-                                <button class="btn btn-primary" type="submit">Login</button>
-                                <a class="btn btn-link" href="{% url 'djangoapp:registration' %}">Sign Up</a>
-                                {% comment %} <a class="btn btn-link" >Sign Up</a> {% endcomment %}
-                            </div>
-                        </form>
-                {% endif %}
-
-                </li>
-            </ul>
-
-        </div>
-    </nav>    
-    
-
+    <!--Header and Navbar -->
+    <header class="pb-5">
+        <nav class=" navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class=" navbar-brand" href="{% url 'djangoapp:index' %}">Best Cars &#128663;</a>
+            {% if user.is_authenticated %}
+            <div class="ml-auto">
+                <a class="h6 mr-2 text-light">Welcome, {{user.username}}</a>
+                <a class="btn btn-outline-danger btn-sm" type="button" href="{% url 'djangoapp:logout' %}">Logout</a>
+            </div> 
+            {% else %}
+            <form action="{% url 'djangoapp:login' %}"  method="post" class="ml-auto">
+                {% csrf_token %}<!--Important do not touch-->
+                <input class="" type="text" id="username" name="username" placeholder="UserName:">
+                <input type="password" id="pword" name="pword" placeholder="Password:">
+                <input class="btn btn-outline-success btn-sm" type="submit" value="Login">
+                <a class="btn btn-outline-warning btn-sm" type="submit" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+            </form>
+            {% endif %}
+        </nav>
+    </header>
     <!--Add a dealer table here -->
+    <main role="main" class="container pt-3">
+        <table class="table" id="table" data-filter-control="true">
+            <thead>
+                <tr>
+                    <th data-field="id">ID</th>
+                    <th data-field="full_name">Dealership Name</th>
+                    <th data-field="city">City</th>
+                    <th data-field="address">Address</th>
+                    <th data-field="zip">ZIP Code</th>
+                    <th data-field="state" data-filter-control="select">State</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for dealer in dealership_list %}
+                    <tr>
+                        <td>{{dealer.id}}</td>
+                        <td><a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{dealer.full_name}}</a></td>
+                        <td>{{dealer.city}}</td>
+                        <td>{{dealer.address}}</td>
+                        <td>{{dealer.zip}}</td>
+                        <td>{{dealer.st}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
 
+    <!--Footer and navbar-->
+    <footer class="navbar navbar-expand-md navbar-dark fixed-bottom bg-dark">
+      <div class="container">
+        <a class="btn btn-sm btn-outline-info" type="button" href="{% url 'djangoapp:about' %}">About Us</a>
+        <a class="btn btn-sm btn-outline-info" type="button" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+      </div>
+    </footer>
     </body>
-
+<script>
+  $(function() {
+    $('#table').bootstrapTable()
+  })
+  
+</script>
 </html>

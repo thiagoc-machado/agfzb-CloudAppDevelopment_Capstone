@@ -5,12 +5,70 @@
     {% load static %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
 
 </head>
     <body>
-    <!--Add review form here -->
+        <header class="pb-5">
+        <nav class=" navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class=" navbar-brand" href="{% url 'djangoapp:index' %}">Best Cars &#128663;</a>
+            {% if user.is_authenticated %}
+            <div class="ml-auto">
+                <a class="h6 mr-2 text-light">Welcome, {{user.username}}</a>
+                <a class="btn btn-outline-danger btn-sm" type="button" href="{% url 'djangoapp:logout' %}">Logout</a>
+            </div> 
+            {% else %}
+            <form action="{% url 'djangoapp:login' %}"  method="post" class="ml-auto">
+                {% csrf_token %}<!--Important do not touch-->
+                <input class="" type="text" id="username" name="username" placeholder="UserName:">
+                <input type="password" id="pword" name="pword" placeholder="Password:">
+                <input class="btn btn-outline-success btn-sm" type="submit" value="Login">
+                <a class="btn btn-outline-warning btn-sm" type="submit" href="{% url 'djangoapp:registration' %}">Sign Up</a>
+            </form>
+            {% endif %}
+        </nav>
+    </header>
+    <!--Header + Nav-->
+    <main role="main" class="d-flex justify-content-center pt-3 ">
+        <form class="border border-dark p-4 w-auto h-auto text-center bg-light" action="{% url 'djangoapp:add_review' dealer_id %}"  method="post">
+            {% csrf_token %}
+            
+            <h1 class="text-center">Review for {{dealer_name}}</h1><br>
+            <label for="name"><b>Name</b></label>
+            <br>
+            <input class="form-control" type="text" placeholder="Enter Your Name: " name="name" required>
+            <label for="content"><b>Review</b></label>
+            <br>
+            <textarea class="form-control" id="content" name="content" rows="2" required placeholder="Write your review here: "></textarea>
+            <br>
+            <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck">
+            <label for="purchasecheck"><b>Did your purchase from this dealership?</b></label>
+            <br>
+            <label for="car"><b>Select vehicle (if purchased)</b></label>
+            <br>
+            <select name="car" id="car" class="form-select" required>
+                {% for car in cars %}
+                    <option selected value="{{car.make.name}}|{{car.name}}|{{ car.year|date:'Y' }}">{{ car.year|date:"Y" }} {{car.make.name}} {{car.name}}</option>
+                {% endfor %}
+            </select>
+            
+            <br>
+            <label for="purchase_date"><b>When was this purchased?</b></label>
+            <input class="date-own form-control" type="date" name="purchase_date" id="purchase_date">
+            <br>
+            <button class="btn btn-warning btn-lg" type="submit">Submit Review</button>
+        </form>
+    </main>
+    <!--Footer and navbar-->
+    <footer class="navbar navbar-expand-md navbar-dark fixed-bottom bg-dark">
+      <div class="container">
+        <a class="btn btn-sm btn-outline-info" type="button" href="{% url 'djangoapp:about' %}">About Us</a>
+        <a class="btn btn-sm btn-outline-info" type="button" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+      </div>
+    </footer>
     </body>
+    
+    
 </html>
